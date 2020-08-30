@@ -1,9 +1,10 @@
 import { Audio, PositionalAudio, AudioListener } from "three";
-import { Behavior } from "../../common/interfaces/Behavior";
-import { Entity } from "../../ecs/classes/Entity";
-import { Component } from "../../ecs/classes/Component";
-import { System } from "../../ecs/classes/System";
-import { types, Ref } from "../../ecs/types/Types";
+import { Behavior } from "../src/common/interfaces/Behavior";
+import { Entity } from "../src/ecs/classes/Entity";
+import { Component } from "../src/ecs/classes/Component";
+import { System } from "../src/ecs/classes/System";
+import { types, Types } from "../src/ecs/types/Types";
+import { addComponent, getComponent } from "../src/ecs/functions/EntityFunctions";
 
 /** 
  * BEECS example
@@ -20,8 +21,8 @@ import { types, Ref } from "../../ecs/types/Types";
  /** Store audio player options and refs to the Elements */
 export class AudioStore extends Component<Audio | PositionalAudio> {
     static schema = types({
-        audioElement: new Ref<Audio | PositionalAudio>,
-        listenerElement: new Ref<AudioListener>,
+        audioElement: Types.Ref,
+        listenerElement: Types.Ref,
         src: String(),
         volume: 0.25,
         autoplay: true,
@@ -32,34 +33,34 @@ export class AudioStore extends Component<Audio | PositionalAudio> {
 }
 
 /** Adds AudioStore component and initialise elements */
-export function add_AudioStore(this:Entity, options: typeof AudioStore.schema): Behavior {
-    const {listenerElement = new AudioListener, positional} = options
+export const addAudioStore: Behavior = (entity: Entity, args: { options: typeof AudioStore.schema }) => {
+    const {listenerElement = new AudioListener(), positional} = args.options
     const ElementClass = positional ? PositionalAudio : Audio
-    const audioElement = new ElementClass(listenerElement)
-    const state = {...options, listenerElement, audioElement}
-    updateElements(state)
-    addComponent(this, AudioStore, state)
+    const audioElement = new ElementClass(listenerElement as AudioListener)
+    const state = {...args.options, listenerElement, audioElement}
+    updateElements(state as any)
+    addComponent(entity, AudioStore, state)
 }
 
 /** Perform audioElement updates when AudioStore component changes */
-export function change_AudioStore(this:Entity): Behavior {
-    const action = getComponent(this, AudioStore)
+export const changeAudioStore: Behavior = (entity: Entity) => {
+    const action = getComponent(entity, AudioStore)
     if( 'audioElement' in action ) updateElements(action)
 }
 
 /** Private function, that apply audioElement methods */
 function updateElements({audioElement, play, src, refDistance}){
     if( audioElement ){
-        if( src !== void 0) audioElement.load(src)
+        if( src !== undefined) audioElement.load(src)
     }
     if( audioElement instanceof PositionalAudio ){
-        if( refDistance !== void 0) audioElement.refDistance(refDistance)
+        if( refDistance !== undefined) (audioElement as PositionalAudio).setRefDistance(refDistance)
     }
 }
 //export function render_AudioState(){} // runs on every tick
 
-/** Compose standart ECS(Y) system from behaviors */
-export const SoundSystem: System = createSystem({
-    components: [AudioStore],
-    behaviors: [add_AudioStore, change_AudioStore],
-})
+/** Compose standard ECS system from behaviors */
+// export const SoundSystem: System = createSystem({
+//     components: [AudioStore],
+//     behaviors: [addAudioStore, changeAudioStore],
+// })
