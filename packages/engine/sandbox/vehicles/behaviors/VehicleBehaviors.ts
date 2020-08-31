@@ -14,7 +14,6 @@ import { Object3DComponent } from "../../../common/components/Object3DComponent"
 import { rotateModel } from "../../../templates/character/behaviors/rotateModel";
 import { resetVelocity } from "../../../templates/character/behaviors/resetVelocity";
 import { setPosition } from "../../../templates/character/behaviors/setPosition";
-import { inputReceiverInit } from "../../../templates/character/behaviors/ActorBehaviors";
 import { setPhysicsEnabled } from "../../../templates/character/behaviors/setPhysicsEnabled";
 
 export const findVehicleToEnter: Behavior = (entity, args: { wantsToDrive: boolean; }): void => {
@@ -122,7 +121,7 @@ export const startControllingVehicle: Behavior = (entity, args: { vehicle: any; 
 
     character.controlledObject = args.vehicle;
     character.controlledObject.allowSleep(false);
-    args.vehicle.inputReceiverInit();
+    // args.vehicle.inputReceiverInit();
 
     args.vehicle.controllingCharacter = character as any;
     // }
@@ -143,7 +142,7 @@ export const stopControllingVehicle: Behavior = (entity: Entity): void => {
         character.controlledObject.controllingCharacter = undefined;
         character.controlledObject.resetControls();
         character.controlledObject = undefined;
-        inputReceiverInit(entity);
+        // inputReceiverInit(entity);
     }
 };
 
