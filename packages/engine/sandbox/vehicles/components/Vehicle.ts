@@ -1,15 +1,15 @@
-import { Component } from "../../../ecs/classes/Component";
+import { Component } from "../../../src/ecs/classes/Component";
 import { VehicleSeat } from "./VehicleSeat";
-import { Wheel } from "../../../physics/components/Wheel";
+import { Wheel } from "../../../src/physics/components/Wheel";
 import { World, RaycastVehicle, Vec3, Material, Body, Box, Sphere } from "cannon-es";
 import THREE from "three";
 import { Utils } from "utils/Utils";
 import _ from "lodash";
-import { CollisionGroups } from "../../../physics/enums/CollisionGroups";
+import { CollisionGroups } from "../../../src/physics/enums/CollisionGroups";
 
 export abstract class Vehicle extends Component<Vehicle>
 {	
-	public controllingCharacter: Character;
+	public controllingCharacter: CharacterComponent;
 	public actions: { [action: string]: KeyBinding; } = {};
 	public rayCastVehicle: RaycastVehicle;
 	public seats: VehicleSeat[] = [];
