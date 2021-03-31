@@ -24,6 +24,7 @@ import mediastreamReducer from './mediastream/reducers';
 import transportReducer from './transport/reducers';
 import creatorReducer from './creator/reducers';
 import inviteTypeReducer from "./inviteType/reducers";
+import contentPackReducer from "./contentPack/reducers";
 
 export default combineReducers({
   admin: adminReducer,
@@ -49,5 +50,6 @@ export default combineReducers({
   feedComments: feedCommentsReducer,
   mediastream: mediastreamReducer,
   transport: transportReducer,
-  invitesTypeData: inviteTypeReducer
+  invitesTypeData: inviteTypeReducer,
+  contentPackReducer: contentPackReducer
 });
