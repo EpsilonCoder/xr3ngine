@@ -1,5 +1,3 @@
-import { styleCanvas } from '@xr3ngine/engine/src/renderer/functions/styleCanvas';
-
 import { Button, Snackbar } from '@material-ui/core';
 import UserMenu from '@xr3ngine/client-core/components/ui/UserMenu';
 import { setAppSpecificOnBoardingStep } from '@xr3ngine/client-core/redux/app/actions';
@@ -94,8 +92,6 @@ const mapDispatchToProps = (dispatch: Dispatch): any => ({
 });
 
 export const EnginePage = (props: Props) => {
-  CreateUI;
-
   const {
     appState,
     authState,
@@ -242,75 +238,9 @@ export const EnginePage = (props: Props) => {
 
     document.dispatchEvent(new CustomEvent('ENGINE_LOADED')); // this is the only time we should use document events. would be good to replace this with react state
     
-    EngineEvents.instance.addEventListener(EngineEvents.EVENTS.CONNECT_TO_WORLD, onNetworkConnect);
-    EngineEvents.instance.addEventListener(EngineEvents.EVENTS.SCENE_LOADED, onSceneLoaded);
-    EngineEvents.instance.addEventListener(EngineEvents.EVENTS.ENTITY_LOADED, onSceneLoadedEntity);
-    EngineEvents.instance.addEventListener(InteractiveSystem.EVENTS.USER_HOVER, onUserHover);
-    EngineEvents.instance.addEventListener(InteractiveSystem.EVENTS.OBJECT_ACTIVATION, onObjectActivation);
-    EngineEvents.instance.addEventListener(InteractiveSystem.EVENTS.OBJECT_HOVER, onObjectHover);
-    const engageType = isMobileOrTablet() ? 'touchstart' : 'click'
-    const onUserEngage = () => {
-      EngineEvents.instance.dispatchEvent({ type: EngineEvents.EVENTS.USER_ENGAGE });
-      document.removeEventListener(engageType, onUserEngage);
-    }
-    document.addEventListener(engageType, onUserEngage);
-
     EngineEvents.instance.dispatchEvent({ type: EngineEvents.EVENTS.LOAD_SCENE, result });
     connectToInstanceServer('instance');
   }
-
-  const onNetworkConnect = async () => {
-    await joinWorld();
-    EngineEvents.instance?.removeEventListener(EngineEvents.EVENTS.CONNECT_TO_WORLD, onNetworkConnect);
-  }
-
-  const joinWorld = async () => {
-    const { worldState } =  await (Network.instance.transport as SocketWebRTCClientTransport).instanceRequest(MessageTypes.JoinWorld.toString());
-    EngineEvents.instance.dispatchEvent({ type: EngineEvents.EVENTS.JOINED_WORLD, worldState });
-    EngineEvents.instance.dispatchEvent({ type: EngineEvents.EVENTS.ENABLE_SCENE, enable: true });
-  }
-
-  //all scene entities are loaded
-  const onSceneLoaded = (event: any): void => {
-    if (event.loaded) {
-      setProgressEntity(0);
-      store.dispatch(setAppOnBoardingStep(generalStateList.SCENE_LOADED));
-      EngineEvents.instance?.removeEventListener(EngineEvents.EVENTS.SCENE_LOADED, onSceneLoaded);
-      setAppLoaded(true);
-    }
-  };
-
-  //started loading scene entities
-  const onSceneLoadedEntity = (event: any): void => {
-    setProgressEntity(event.left || 0);
-  };
-
-  const onObjectHover = ({ focused, interactionText}): void => {
-    setObjectHovered(focused);
-    setHoveredLabel(interactionText);
-  };
-
-  const onUserHover = ({ focused, userId, position }): void => {
-    setonUserHover(focused);
-    setonUserId(focused ? userId : null);
-    setonUserPosition(focused ? position : null);
-  };
-
-  const onObjectActivation = ({ action, payload }): void => {
-    switch (action) {
-      case 'link':
-        setOpenLinkData(payload);
-        setObjectActivated(true);
-        break;
-      case 'infoBox':
-      case 'mediaSource':
-        setModalData(payload);
-        setObjectActivated(true);
-        break;
-      default:
-        break;
-    }
-  };
 
   useEffect(() => {
     console.log('callee 2');
@@ -319,52 +249,12 @@ export const EnginePage = (props: Props) => {
     };
   }, []);
 
-  console.log('callee 3');
-
-  if (Network.instance) {
-    userState.get('layerUsers').forEach(user => {
-      if (user.id !== currentUser?.id) {
-        const networkUser = Object.values(Network.instance.networkObjects).find(networkUser => networkUser.ownerId === user.id
-          && networkUser.prefabType === PrefabType.Player);
-        if (networkUser) {
-          const changedAvatar = getComponent(networkUser.component.entity, CharacterComponent);
-
-          if (user.avatarId !== changedAvatar.avatarId) {
-            const characterAvatar = getMutableComponent(networkUser.component.entity, CharacterComponent);
-            if (characterAvatar != null) characterAvatar.avatarId = user.avatarId;
-            // We can pull this from NetworkPlayerCharacter, but we probably don't want our state update here
-            // loadActorAvatar(networkUser.component.entity);
-          }
-        }
-      }
-    });
-  }
-
   //mobile gamepad
   const mobileGamepadProps = { hovered: objectHovered, layout: 'default' };
   const mobileGamepad = isMobileOrTablet() ? <MobileGamepad {...mobileGamepadProps} /> : null;
 
   return userBanned !== true ? (
     <>
-      {isValidLocation && <UserMenu />}
-      <Snackbar open={!isValidLocation}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}>
-        <>
-          <section>Location is invalid</section>
-          <Button onClick={goHome}>Return Home</Button>
-        </>
-      </Snackbar>
-
-      <NetworkDebug />
-      <LoadingScreen objectsToLoad={progressEntity} />
-      { harmonyOpen !== true && <MediaIconsBox /> }
-      { userHovered && <NamePlate userId={userId} position={{ x: position?.x, y: position?.y }} focused={userHovered} />}
-      {objectHovered && !objectActivated && <TooltipContainer message={hoveredLabel} />}
-      <InteractableModal onClose={() => { setModalData(null); setObjectActivated(false); }} data={infoBoxData} />
-      <OpenLink onClose={() => { setOpenLinkData(null); setObjectActivated(false); }} data={openLinkData} />
       <canvas id={engineRendererCanvasId} width='100%' height='100%' />
       {mobileGamepad}
     </>

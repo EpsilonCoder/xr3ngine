@@ -78,8 +78,7 @@
     "mediasoup-client": "^3.6.12",
     "sequelize": "~5.21.8",
     "socket.io": "2.4.1",
-    "three": "^0.125.0",
-    "three-mesh-ui": "4.5.1"
+    "three": "^0.125.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.11.5",

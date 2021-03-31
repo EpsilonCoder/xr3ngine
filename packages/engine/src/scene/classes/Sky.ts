@@ -193,6 +193,8 @@ export class Sky extends Object3D {
   _distance: number;
   static material: ShaderMaterial
   constructor() {
+    console.log('call stack of Sky');
+    console.trace();
     super();
     Sky.material = new ShaderMaterial({
       fragmentShader: Sky.shader.fragmentShader,

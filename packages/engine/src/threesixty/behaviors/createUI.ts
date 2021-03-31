@@ -7,5 +7,6 @@ import { ScaleComponent } from '../../transform/components/ScaleComponent';
 // import { addObject3DComponent } from './addObject3DComponent';
 
 export default function createUI(): void {
-  Engine.scene.add(ui);
+  console.log('Engine.scene', Engine.scene);
+  // Engine.scene.add(ui);
 }

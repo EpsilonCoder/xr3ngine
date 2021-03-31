@@ -7,7 +7,7 @@ import NoSSR from 'react-no-ssr';
 const VideoPage = () => {
   return (
     <EmptyLayout>
-      <Scene/>
+      <Scene locationName = 'test'/>
         <div>
         </div>
     </EmptyLayout>
