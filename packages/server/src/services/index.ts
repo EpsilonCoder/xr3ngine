@@ -60,6 +60,9 @@ import UploadPresigned from './upload-presigned/upload-presigned.service';
 import Video from './video/video.service';
 import Subscription from './subscription/subscription.service';
 import SubscriptionConfirm from './subscription-confirm/subscription-confirm.service';
+import ContentPack from './content-pack/content-pack.service';
+
+//ARC
 import Creator from './creator/creator.service';
 import Feed from './feed/feed.service';
 import FeedFires from './feed-fires/feed-fires.service';
@@ -140,7 +143,10 @@ export default (app: Application): void => {
   app.configure(SubscriptionConfirm);
   app.configure(Upload);
   app.configure(UploadPresigned);
+  app.configure(ContentPack);
   // app.configure(Video);
+
+  // ARC
   app.configure(Creator); // ARC
   app.configure(Feed); // ARC
   app.configure(FeedFires); // ARC

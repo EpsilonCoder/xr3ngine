@@ -51,5 +51,5 @@ export default combineReducers({
   mediastream: mediastreamReducer,
   transport: transportReducer,
   invitesTypeData: inviteTypeReducer,
-  contentPackReducer: contentPackReducer
+  contentPack: contentPackReducer
 });
