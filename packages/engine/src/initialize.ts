@@ -33,6 +33,8 @@ import { isMobileOrTablet } from './common/functions/isMobile';
 import { AnimationManager } from './templates/character/prefabs/NetworkPlayerCharacter';
 import { CharacterControllerSystem } from './character/CharacterControllerSystem';
 import { useOffscreen } from './common/functions/getURLParams';
+import { UIPanelSystem } from './ui/systems/UIPanelSystem';
+import { RaycastSystem } from './raycast/systems/RaycastSystem';
 
 // import { PositionalAudioSystem } from './audio/systems/PositionalAudioSystem';
 
@@ -101,11 +103,13 @@ export const initializeEngine = async (initOptions: any = DefaultInitializationO
   if(!useOffscreen) {
 
     await AnimationManager.instance.getDefaultModel()
+    registerSystem(RaycastSystem);
     registerSystem(StateSystem);
     registerSystem(CharacterControllerSystem);
     registerSystem(PhysicsSystem);
     registerSystem(ServerSpawnSystem, { priority: 899 });
     registerSystem(TransformSystem, { priority: 900 });
+    registerSystem(UIPanelSystem);
 
     Engine.camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
     Engine.scene.add(Engine.camera);
@@ -165,6 +169,7 @@ export const initializeServer = async (initOptions: any = DefaultInitializationO
   registerSystem(ServerNetworkIncomingSystem, { ...networkSystemOptions, priority: -1 });
   registerSystem(ServerNetworkOutgoingSystem, { ...networkSystemOptions, priority: 10000 });
   registerSystem(MediaStreamSystem);
+  registerSystem(RaycastSystem);
   registerSystem(StateSystem);
   registerSystem(CharacterControllerSystem);
   registerSystem(PhysicsSystem);

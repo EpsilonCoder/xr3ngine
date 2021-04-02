@@ -29,6 +29,8 @@ import { XRSystem } from '../xr/systems/XRSystem';
 import { receiveWorker } from './MessageQueue';
 import { AnimationManager } from '../templates/character/prefabs/NetworkPlayerCharacter';
 import { CharacterControllerSystem } from '../character/CharacterControllerSystem';
+import { UIPanelSystem } from '../ui/systems/UIPanelSystem';
+import { RaycastSystem } from '../raycast/systems/RaycastSystem';
 
 
 Mesh.prototype.raycast = acceleratedRaycast;
@@ -59,13 +61,15 @@ const initializeEngineOffscreen = async ({ canvas, userArgs }, proxy: MainProxy)
   Network.instance.schema = options.networking.schema;
   // @ts-ignore
   Network.instance.transport = { isServer: false }
-
+  
+  registerSystem(RaycastSystem)
   registerSystem(PhysicsSystem);
   registerSystem(ActionSystem, { useWebXR: false });
   registerSystem(StateSystem);
   registerSystem(CharacterControllerSystem);
   registerSystem(ServerSpawnSystem, { priority: 899 });
   registerSystem(TransformSystem, { priority: 900 });
+  registerSystem(UIPanelSystem);
   
   Engine.camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
   Engine.scene.add(Engine.camera);
