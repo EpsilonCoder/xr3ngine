@@ -16,7 +16,6 @@ export default class GithubStrategy extends CustomOAuthStrategy {
   }
 
   async updateEntity(entity: any, profile: any, params?: Params): Promise<any> {
-    console.log('Github JWT authenticate');
     const authResult = await app.service('authentication').strategies.jwt.authenticate({ accessToken: params?.authentication?.accessToken }, {});
     const identityProvider = authResult['identity-provider'];
     const user = await app.service('user').get(entity.userId);
@@ -31,9 +30,6 @@ export default class GithubStrategy extends CustomOAuthStrategy {
   }
 
   async getRedirect (data: any, params?: Params): Promise<string> {
-    console.log('Github getRedirect');
-    console.log(data);
-    console.log(params);
     const redirectHost = config.authentication.callback.github;
 
     const type = (params?.query?.userId) ? 'connection' : 'login';
