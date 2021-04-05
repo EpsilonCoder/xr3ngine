@@ -8,7 +8,7 @@ class SceneButton extends Object3D {
 	  }
 	
 	  init(title, index){
-		var pos = [0, 0, 0];
+		let pos = [0, 0, 0];
 		
 		switch ( index ) {
 			case 0:
