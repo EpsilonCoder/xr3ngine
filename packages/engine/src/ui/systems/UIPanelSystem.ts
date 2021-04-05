@@ -1,14 +1,15 @@
 
 import { System, SystemAttributes } from "../../ecs/classes/System";
 import { UIPanelComponent } from "../components/UIPanelComponent";
-import { Keyboard, update } from "../../assets/three-mesh-ui";
+import ThreeMeshUI, { Block, Keyboard } from "../../assets/three-mesh-ui";
 import { createPanelComponent } from "../functions/createPanelComponent";
 import { Entity } from "../../ecs/classes/Entity";
 import { getComponent } from "../../ecs/functions/EntityFunctions";
-import { Group } from "three";
+import { Group, Object3D, Color } from "three";
 import { Engine } from "../../ecs/classes/Engine";
+import SceneGallery from "../components/SceneGallery";
 
-export class UIPanelSystem extends System {
+class UIPanelSystem extends System {
 
   panelContainer: Group;
 
@@ -16,8 +17,9 @@ export class UIPanelSystem extends System {
     super(attributes);
     this.panelContainer = new Group();
     Engine.scene.add(this.panelContainer);
-    createPanelComponent({ panel: new Keyboard() })
+    createPanelComponent({ panel: new SceneGallery() })
   }
+
   execute(): void {
     this.queryResults.panels?.added?.forEach((entity: Entity) => {
       const uiPanel = getComponent(entity, UIPanelComponent);
@@ -33,12 +35,13 @@ export class UIPanelSystem extends System {
       this.panelContainer.remove(uiPanel.panel)
     })
     if(this.queryResults.panels?.all?.length) {
-      update()
+      ThreeMeshUI.update()
     }
   }
 
   dispose() {}
 }
+
 
 UIPanelSystem.queries = {
   panels: {

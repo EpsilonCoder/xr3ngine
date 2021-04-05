@@ -8,6 +8,7 @@ import { TransformComponent } from "../../transform/components/TransformComponen
 import { UIPanelComponent } from "../components/UIPanelComponent";
 
 export const createPanelComponent = (args: { panel: any }) => {
+  console.log("createPanelComponent args : ", args);
   const entity = createEntity();
   addComponent(entity, UIPanelComponent, { panel: args.panel });
   addComponent(entity, Object3DComponent, { value: args.panel })
